@@ -4,6 +4,11 @@ const app = express()
 // get the port from env variable
 const PORT = process.env.PORT || 5001
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).send('ok')
+})
+
 app.use(express.static('dist'))
 
 const start = async () => {
