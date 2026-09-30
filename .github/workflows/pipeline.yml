@@ -50,6 +50,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.75.0
         env:
