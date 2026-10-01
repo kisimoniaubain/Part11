@@ -18,12 +18,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
@@ -42,12 +42,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
@@ -74,13 +74,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Bump version and push tag
         id: tag_version
-        uses: anothrNick/github-tag-action@1.75.0
+        uses: anothrNick/github-tag-action@1.71.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
@@ -103,7 +103,7 @@ jobs:
 
   notify_failure:
     needs: [test, e2e, deploy, tag_release]
-    if: ${{ failure() && github.event_name == 'push' }}
+    if: ${{ always() && github.event_name == 'push' && contains(needs.*.result, 'failure') }}
     runs-on: ubuntu-latest
 
     steps:
