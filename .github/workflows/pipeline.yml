@@ -47,6 +47,18 @@ jobs:
         if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
         run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
 
+      - name: Notify Discord - Build failed
+        if: ${{ failure() && github.event_name == 'push' }}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: Failure
+          title: "Build failed"
+          description: |
+            Commit: ${{ github.sha }}
+            Message: ${{ github.event.head_commit.message }}
+            Author: ${{ github.event.head_commit.author.name }}
+
   tag_release:
     needs: [simple_deployment_pipeline]
     if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
@@ -59,7 +71,19 @@ jobs:
           fetch-depth: 0
 
       - name: Bump version and push tag
+        id: tag_version
         uses: anothrNick/github-tag-action@1.75.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+
+      - name: Notify Discord - Deployment successful
+        if: ${{ success() }}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: Success
+          title: "New version deployed"
+          description: |
+            Version: ${{ steps.tag_version.outputs.new_tag }}
+            Commit: ${{ github.sha }}
