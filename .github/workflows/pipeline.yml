@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - test-failure-notification
   pull_request:
     branches:
       - main
@@ -35,7 +36,9 @@ jobs:
         run: npm run build
 
       - name: Test
-        run: npm test
+        run: |
+          echo "Intentional failure test"
+          exit 1
 
   e2e:
     runs-on: ubuntu-latest
