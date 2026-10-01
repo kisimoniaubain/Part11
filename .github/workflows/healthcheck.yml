@@ -1,0 +1,13 @@
+name: Periodic Health Check
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  periodic_health_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping deployed app endpoint
+        run: curl -sSf https://part11-0f50.onrender.com > /dev/null
